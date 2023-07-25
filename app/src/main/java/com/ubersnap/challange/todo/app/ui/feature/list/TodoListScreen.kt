@@ -1,6 +1,10 @@
 package com.ubersnap.challange.todo.app.ui.feature.list
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.WindowInsets
@@ -79,10 +83,7 @@ private fun TodoListScreenUi(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .windowInsetsPadding(
-                WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
-            ),
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
@@ -92,7 +93,11 @@ private fun TodoListScreenUi(
             )
         },
         floatingActionButton = {
-            AnimatedVisibility(visible = showFab) {
+            AnimatedVisibility(
+                visible = showFab,
+                enter = slideInVertically { height -> height } + fadeIn(),
+                exit = slideOutVertically { height -> height } + fadeOut()
+            ) {
                 FloatingActionButton(
                     onClick = onCreateTodoClick
                 ) {

@@ -140,10 +140,7 @@ private fun TodoModificationScreenUi(
     Scaffold(
         modifier = Modifier
             .fillMaxSize()
-            .nestedScroll(scrollBehavior.nestedScrollConnection)
-            .windowInsetsPadding(
-                WindowInsets.systemBars.only(WindowInsetsSides.Horizontal)
-            ),
+            .nestedScroll(scrollBehavior.nestedScrollConnection),
         topBar = {
             TopAppBar(
                 title = {
