@@ -8,5 +8,6 @@ interface TodoRepository {
     fun getTodos(): Flow<List<Todo>>
     suspend fun getTodo(todoId: Long): Resource<Todo>
     suspend fun createTodo(todo: Todo): Resource<Nothing>
+    suspend fun updateTodo(todo: Todo): Resource<Nothing>
     suspend fun deleteTodo(todo: Todo): Resource<Nothing>
 }

@@ -46,6 +46,18 @@ class TodoDataSource @Inject constructor(
         }
     }
 
+    override suspend fun updateTodo(todo: Todo): Resource<Nothing> {
+        return try {
+            todoDao.update(todo.asTodoEntity())
+            Resource.Success()
+        } catch (e: Exception) {
+            Timber.e(e)
+            Resource.Failed(
+                message = e.message
+            )
+        }
+    }
+
     override suspend fun deleteTodo(todo: Todo): Resource<Nothing> {
         return try {
             todoDao.delete(todo.asTodoEntity())
