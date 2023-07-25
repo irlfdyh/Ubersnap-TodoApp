@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.ubersnap.challange.todo.app.data.Resource
 import com.ubersnap.challange.todo.app.data.repository.TodoRepository
 import com.ubersnap.challange.todo.app.entity.Todo
 import com.ubersnap.challange.todo.app.ui.LoadState
@@ -55,6 +56,24 @@ class TodoListViewModel @Inject constructor(
 
     fun onReloadAction() {
         getTodos(retry = true)
+    }
+
+    var deleteLoadState by mutableStateOf<LoadState<String>?>(null)
+
+    fun onDeleteItem(todo: Todo) {
+        viewModelScope.launch(Dispatchers.IO) {
+            deleteLoadState = LoadState.Loading()
+            todoRepository.deleteTodo(todo).let { resource ->
+                deleteLoadState = when (resource) {
+                    is Resource.Success -> LoadState.Empty()
+                    is Resource.Failed -> LoadState.Failed()
+                }
+            }
+        }
+    }
+
+    fun onResetLoadState() {
+        deleteLoadState = null
     }
 
 }

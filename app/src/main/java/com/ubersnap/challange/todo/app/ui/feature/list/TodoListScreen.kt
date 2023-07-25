@@ -31,7 +31,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
@@ -43,7 +45,9 @@ import com.ubersnap.challange.todo.app.ui.LoadState
 import com.ubersnap.challange.todo.app.ui.component.EmptyScreen
 import com.ubersnap.challange.todo.app.ui.component.ErrorScreen
 import com.ubersnap.challange.todo.app.ui.component.ItemTodo
+import com.ubersnap.challange.todo.app.ui.component.LoadingDialog
 import com.ubersnap.challange.todo.app.ui.component.LoadingScreen
+import com.ubersnap.challange.todo.app.ui.component.MessageDialog
 
 @Composable
 fun TodoListScreen(
@@ -58,7 +62,10 @@ fun TodoListScreen(
         todoLoadState = viewModel.todoLoadState,
         onTodoItemClick = onTodoItemClick,
         onCreateTodoClick = onCreateTodoClick,
-        onReloadAction = viewModel::onReloadAction
+        onDeleteItem = viewModel::onDeleteItem,
+        onReloadAction = viewModel::onReloadAction,
+        deleteLoadState = viewModel.deleteLoadState,
+        onResetLoadState = viewModel::onResetLoadState
     )
 }
 
@@ -68,7 +75,10 @@ private fun TodoListScreenUi(
     todoLoadState: LoadState<List<Todo>>,
     onTodoItemClick: (Long) -> Unit = { },
     onCreateTodoClick: () -> Unit = { },
-    onReloadAction: () -> Unit = { }
+    onDeleteItem: (Todo) -> Unit = { },
+    onReloadAction: () -> Unit = { },
+    deleteLoadState: LoadState<String>?,
+    onResetLoadState: () -> Unit = { }
 ) {
 
     val listState = rememberLazyListState()
@@ -118,7 +128,8 @@ private fun TodoListScreenUi(
                     modifier = Modifier.padding(innerPadding),
                     listState = listState,
                     todos = todoLoadState.data,
-                    onTodoItemClick = onTodoItemClick
+                    onTodoItemClick = onTodoItemClick,
+                    onDeleteItem = onDeleteItem
                 )
             }
             is LoadState.Empty -> {
@@ -140,6 +151,41 @@ private fun TodoListScreenUi(
         }
     }
 
+    var actionResultMessage by remember { mutableStateOf("") }
+    var showLoadingDialog by remember { mutableStateOf(false) }
+
+    deleteLoadState?.let {
+        when (deleteLoadState) {
+            is LoadState.Available -> Unit
+            is LoadState.Empty -> {
+                actionResultMessage = stringResource(id = R.string.msg_todo_deleted)
+                showLoadingDialog = false
+            }
+            is LoadState.Failed -> {
+                actionResultMessage = stringResource(id = R.string.msg_delete_failed)
+                showLoadingDialog = false
+            }
+            is LoadState.Loading -> {
+                showLoadingDialog = true
+                actionResultMessage = ""
+            }
+        }
+    }
+
+    if (actionResultMessage != "") {
+        MessageDialog(
+            text = actionResultMessage,
+            onDismiss = {
+                actionResultMessage = ""
+                onResetLoadState()
+            }
+        )
+    }
+
+    if (showLoadingDialog) {
+        LoadingDialog()
+    }
+
 }
 
 @Composable
@@ -147,7 +193,8 @@ private fun AvailableScreen(
     modifier: Modifier = Modifier,
     listState: LazyListState,
     todos: List<Todo>,
-    onTodoItemClick: (Long) -> Unit = { }
+    onTodoItemClick: (Long) -> Unit = { },
+    onDeleteItem: (Todo) -> Unit = { }
 ) {
     LazyColumn(
         modifier = modifier.fillMaxSize(),
@@ -161,7 +208,8 @@ private fun AvailableScreen(
         ) { todo ->
             ItemTodo(
                 todo = todo,
-                onItemClick = { onTodoItemClick(todo.id) }
+                onItemClick = { onTodoItemClick(todo.id) },
+                onDeleteItem = { onDeleteItem(todo) }
             )
         }
     }

@@ -21,4 +21,5 @@
     <string name="msg_todo_created">Todo successfully created</string>
     <string name="msg_todo_updated">Todo successfully updated</string>
     <string name="msg_todo_deleted">Todo successfully deleted</string>
+    <string name="msg_delete_failed">Failed when delete todo</string>
 </resources>
