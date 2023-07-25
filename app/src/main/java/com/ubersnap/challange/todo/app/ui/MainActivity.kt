@@ -1,4 +1,4 @@
-package com.ubersnap.challange.todo.app
+package com.ubersnap.challange.todo.app.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
