@@ -28,19 +28,3 @@ object TodoModification : AppDestination {
         todoId: Long? = null
     ) = "$route?$todoIdKey=$todoId"
 }
-
-object TodoDetail : AppDestination {
-    override val route: String
-        get() = "todo"
-    const val todoId = "todo_id"
-    val routeWithArgs = "$route/{$todoId}"
-    val arguments = listOf(
-        navArgument(todoId) {
-            type = NavType.LongType
-        }
-    )
-
-    fun buildRouteWithArgs(
-        todoId: Long
-    ) = "$route/$todoId"
-}

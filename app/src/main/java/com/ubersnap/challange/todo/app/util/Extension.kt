@@ -5,3 +5,6 @@ import com.ubersnap.challange.todo.app.entity.Todo
 
 fun List<TodoEntity>.asTodos(): List<Todo> =
     this.map { it.asTodo() }
+
+fun Long?.valueOrZero() =
+    this ?: 0L

@@ -1,8 +1,21 @@
 <resources>
     <string name="app_name">Ubersnap Todo App</string>
+
     <string name="cd_add_todo">Add new todo</string>
+    <string name="cd_navigate_up">Back to the previous screen</string>
+    <string name="cd_delete_todo">Delete todo data</string>
+
     <string name="str_no_data_available">No data available</string>
     <string name="str_retry">Retry</string>
     <string name="str_get_data_failed">Failed when get data</string>
-    <string name="str_due_date">Due date</string>
+    <string name="str_due_date">Due Date</string>
+    <string name="str_update_data">Update Data</string>
+    <string name="str_create_data">Create Data</string>
+    <string name="str_title">Title</string>
+    <string name="str_description">Description</string>
+    <string name="str_save">Save</string>
+    <string name="cd_pick_date">Pick due date</string>
+    <string name="str_select">Select</string>
+    <string name="str_ok">OK</string>
+    <string name="str_cancel">Cancel</string>
 </resources>
