@@ -42,6 +42,9 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.ubersnap.challange.todo.app.R
+import com.ubersnap.challange.todo.app.ui.LoadState
+import com.ubersnap.challange.todo.app.ui.component.LoadingDialog
+import com.ubersnap.challange.todo.app.ui.component.MessageDialog
 import com.ubersnap.challange.todo.app.util.asDateFormat
 
 @Composable
@@ -63,7 +66,10 @@ fun TodoModificationScreen(
         description = viewModel.description,
         onDescriptionUpdate = viewModel::onDescriptionUpdate,
         dueDate = viewModel.dueDate,
-        onDueDateUpdate = viewModel::onDueDateUpdate
+        onDueDateUpdate = viewModel::onDueDateUpdate,
+        enableButton = viewModel.actionEnabled,
+        actionLoadState = viewModel.actionLoadState,
+        onClearActionLoadState = viewModel::onClearActionLoadState
     )
 }
 
@@ -80,7 +86,52 @@ private fun TodoModificationScreenUi(
     onDescriptionUpdate: (String) -> Unit = { },
     dueDate: Long,
     onDueDateUpdate: (Long) -> Unit = { },
+    enableButton: Boolean,
+    actionLoadState: LoadState<ModificationState>?,
+    onClearActionLoadState: () -> Unit = { }
 ) {
+
+    var showMessageDialog by remember { mutableStateOf("") }
+    var showLoadingDialog by remember { mutableStateOf(false) }
+
+    when (actionLoadState) {
+        is LoadState.Available -> {
+            showLoadingDialog = false
+            when (actionLoadState.data) {
+                ModificationState.CREATE -> {
+                    showMessageDialog = stringResource(id = R.string.msg_todo_created)
+                }
+                ModificationState.UPDATE -> {
+                    showMessageDialog = stringResource(id = R.string.msg_todo_updated)
+                }
+                ModificationState.DELETE -> {
+                    showMessageDialog = stringResource(id = R.string.msg_todo_deleted)
+                }
+                ModificationState.VIEW -> Unit
+            }
+        }
+        is LoadState.Empty -> Unit
+        is LoadState.Failed -> Unit
+        is LoadState.Loading -> {
+            showLoadingDialog = true
+        }
+        else -> Unit
+    }
+
+    if (showMessageDialog != "") {
+        MessageDialog(
+            text = showMessageDialog,
+            onDismiss = {
+                showMessageDialog = ""
+                onClearActionLoadState()
+                onNavigateUp()
+            }
+        )
+    }
+
+    if (showLoadingDialog) {
+        LoadingDialog()
+    }
 
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
 
@@ -138,7 +189,7 @@ private fun TodoModificationScreenUi(
             DatePickerDialog(
                 onDismissRequest = { showDatePicker = false },
                 confirmButton = {
-                    Row(modifier = Modifier.padding(8.dp)) {
+                    Row {
                         TextButton(
                             onClick = {
                                 showDatePicker = false
@@ -211,7 +262,8 @@ private fun TodoModificationScreenUi(
                 onClick = onSaveAction,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 16.dp)
+                    .padding(top = 16.dp),
+                enabled = enableButton
             ) {
                 Text(text = stringResource(id = R.string.str_save))
             }

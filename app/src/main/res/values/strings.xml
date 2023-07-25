@@ -18,4 +18,7 @@
     <string name="str_select">Select</string>
     <string name="str_ok">OK</string>
     <string name="str_cancel">Cancel</string>
+    <string name="msg_todo_created">Todo successfully created</string>
+    <string name="msg_todo_updated">Todo successfully updated</string>
+    <string name="msg_todo_deleted">Todo successfully deleted</string>
 </resources>
