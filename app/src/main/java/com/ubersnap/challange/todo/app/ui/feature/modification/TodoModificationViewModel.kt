@@ -127,7 +127,15 @@ class TodoModificationViewModel @Inject constructor(
     private fun updateTodo() {
         Timber.i("onUpdateTodo")
         viewModelScope.launch(Dispatchers.IO) {
-
+            actionLoadState = LoadState.Loading()
+            repository.updateTodo(
+                todo = requireCurrentTodo()
+            ).let { resource ->
+                actionLoadState = when (resource) {
+                    is Resource.Success -> LoadState.Available(ModificationState.UPDATE)
+                    is Resource.Failed -> LoadState.Failed()
+                }
+            }
         }
     }
 
