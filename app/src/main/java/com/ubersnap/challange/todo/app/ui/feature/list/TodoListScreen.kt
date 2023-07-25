@@ -38,6 +38,7 @@ import com.ubersnap.challange.todo.app.entity.Todo
 import com.ubersnap.challange.todo.app.ui.LoadState
 import com.ubersnap.challange.todo.app.ui.component.EmptyScreen
 import com.ubersnap.challange.todo.app.ui.component.ErrorScreen
+import com.ubersnap.challange.todo.app.ui.component.ItemTodo
 import com.ubersnap.challange.todo.app.ui.component.LoadingScreen
 
 @Composable
@@ -150,7 +151,10 @@ private fun AvailableScreen(
             items = todos,
             key = { it.id }
         ) { todo ->
-
+            ItemTodo(
+                todo = todo,
+                onItemClick = { onTodoItemClick(todo.id) }
+            )
         }
     }
 }

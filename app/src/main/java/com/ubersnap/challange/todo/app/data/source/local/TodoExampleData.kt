@@ -12,7 +12,7 @@ object TodoExampleData {
             dueDate = 1690282564000
         ),
         TodoEntity(
-            id = 1,
+            id = 2,
             title = "Finish code challenge",
             description = "Finish code challange from Ubersnap",
             dueDate = 1690279200000
